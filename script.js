@@ -880,5 +880,5 @@ async function main() {
 
 main();
 fetchDataAndToggle();
-setInterval(fetchDataAndToggle, 1000);
+setInterval(fetchDataAndToggle, 10000);
 setInterval(main, 10000);
