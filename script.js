@@ -4,7 +4,7 @@ var dropdownItems = document.querySelectorAll(".dropdown-item");
 
 let dataLengthOld = 0;
 let dataLengthNew = 0;
-let url = "http://rung.ddns.net:8050";
+let url = "https://api.rungrueng.site";
 let today = false;
 let temperatureChart;
 let humidityChart;
