@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Project</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="style.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.0.4/css/bootstrap5-toggle.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.0.4/js/bootstrap5-toggle.jquery.min.js"></script>
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<div class="loader" id="loadingMessage">
+	<div class=" loader-inner">
+		<div class="loader-line-wrap">
+			<div class="loader-line"></div>
+		</div>
+		<div class="loader-line-wrap">
+			<div class="loader-line"></div>
+		</div>
+		<div class="loader-line-wrap">
+			<div class="loader-line"></div>
+		</div>
+		<div class="loader-line-wrap">
+			<div class="loader-line"></div>
+		</div>
+		<div class="loader-line-wrap">
+			<div class="loader-line"></div>
+		</div>
+	</div>
+</div>
+
+
+
+<body id="content">
+	<nav class="navbar navbar-expand-lg navbar-dark navbar-light animate__animated animate__fadeInDownBig"
+		style="background-color: #484748d7">
+		<a class="navbar-brand" href="/">Admin</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+						Home
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<a class="dropdown-item" href="#Dashboard">Dashboard</a>
+						<a class="dropdown-item" href="#temperaturegraph">Temperature Graphs</a>
+						<a class="dropdown-item" href="#humiditygraph">Humidity Graphs</a>
+						<a class="dropdown-item" href="#Locations">Locations</a>
+					</div>
+				</li>
+				<li class="nav-item">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false">
+						Past Records
+					</a>
+					<div class="dropdown-menu his" aria-labelledby="navbarDropdownMenuLink">
+						<form id="TimeForm">
+							<label for="start">&nbsp;&nbsp;&nbsp;&nbsp;Start :</label>
+							<input type="datetime-local" id="start" name="start" required value="2023-12-29T00:00"
+								min="2023-01-12T00:00" max="2024-12-31T23:59">
+							<br>
+							<label for="end">&nbsp;&nbsp;&nbsp;&nbsp;End :&nbsp;</label>
+							<input type="datetime-local" id="end" name="end" required value="2023-12-29T15:00"
+								min="2023-01-12T00:00" max="2024-12-31T23:59">
+							<br>
+							<div class="dropdown-divider"></div>
+							<button type="button" onclick="submitForm()" style="margin-left:38%;">Submit</button>
+						</form>
+					</div>
+
+				</li>
+
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link" href="http://rung.ddns.net:8080/phpmyadmin" target="_blank">Setting</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/api/show" target="_blank">Alert</a>
+				</li>
+
+			</ul>
+		</div>
+	</nav>
+	<div class="container-fluid" style="margin-top: 0%;">
+		<div class="row mt-4">
+			<div class="col-12">
+				<h1 class="p-2">
+					<span id="Dashboard">Dashboard</span>&nbsp<span id="lastUpdateTime"></span>
+				</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-6 animate__animated animate__animated animate__pulse">
+				<div class="row mt-4 flex-row">
+					<div class="col-md-6">
+						<div class="card mb-4">
+							<div class="card-header">
+								<div class="row">
+									<div class="col">
+										<h5>Node 1</h5>
+									</div>
+									<div class="col-auto">
+										<span class="material-symbols-outlined">battery_4_bar</span>
+										<span class="batteryvalue">80%</span>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<div class="col-12 align-content-center">
+										<div class="row">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														thermometer
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title temp">Temperature</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node2avgtemp"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="row align-items-center">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														humidity_percentage
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title humi">Humidity</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node1avghumi"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row justify-content-end">
+									<div class="col-auto">
+										<label class="invisible-button"
+											onclick="toggleChanged('Node1', 'node1toggle')"></label>
+										<input id="node1toggle" type="checkbox" checked data-toggle="toggle"
+											data-onstyle="success" data-offstyle="danger" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 mb-4">
+						<div class="card mb-4">
+							<div class="card-header">
+								<div class="row">
+									<div class="col">
+										<h5>Node 2</h5>
+									</div>
+									<div class="col-auto">
+										<span class="material-symbols-outlined">battery_4_bar</span>
+										<span class="batteryvalue">80%</span>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<div class="col-12">
+										<div class="row align-items-center">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														thermometer
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title temp">Temperature</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node1avgtemp"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="row align-items-center">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														humidity_percentage
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title humi">Humidity</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node2avghumi"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row justify-content-end">
+									<div class="col-auto">
+										<label class="invisible-button"
+											onclick="toggleChanged('Node2', 'node2toggle')"></label>
+										<input id="node2toggle" type="checkbox" checked data-toggle="toggle"
+											data-onstyle="success" data-offstyle="danger" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 mb-4">
+						<div class="card mb-4">
+							<div class="card-header">
+								<div class="row">
+									<div class="col">
+										<h5>Node 3</h5>
+									</div>
+									<div class="col-auto">
+										<span class="material-symbols-outlined">battery_4_bar</span>
+										<span class="batteryvalue">80%</span>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<div class="col-12">
+										<div class="row align-items-center">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														thermometer
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title temp">Temperature</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node3avgtemp"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="row align-items-center">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														humidity_percentage
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title humi">Humidity</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node3avghumi"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row justify-content-end">
+									<div class="col-auto">
+										<label class="invisible-button"
+											onclick="toggleChanged('Node3', 'node3toggle')"></label>
+										<input id="node3toggle" type="checkbox" checked data-toggle="toggle"
+											data-onstyle="success" data-offstyle="danger" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card mb-4">
+							<div class="card-header">
+								<div class="row">
+									<div class="col">
+										<h5>Node 4</h5>
+									</div>
+									<div class="col-auto">
+										<span class="material-symbols-outlined">battery_4_bar</span>
+										<span class="batteryvalue">80%</span>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<div class="col-12">
+										<div class="row align-items-center">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														thermometer
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title temp">Temperature</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node4avgtemp"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="row align-items-center">
+											<div class="col-2 col-lg-1 col-xl-2">
+												<h5 class="card-title">
+													<span class="material-symbols-outlined icon-style">
+														humidity_percentage
+													</span>
+												</h5>
+											</div>
+											<div class="col-5 col-lg-3 col-xl-5">
+												<h5 class="card-title humi">Humidity</h5>
+											</div>
+											<div class="col-5 col-lg-7 col-xl-5">
+												<h5 class="card-title" id="node4avghumi"></h5>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row justify-content-end">
+									<div class="col-auto">
+										<label class="invisible-button"
+											onclick="toggleChanged('Node4', 'node4toggle')"></label>
+										<input id="node4toggle" type="checkbox" checked data-toggle="toggle"
+											data-onstyle="success" data-offstyle="danger" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12 col-md-12 col-lg-6 mt-sm-0 mt-lg-4 ">
+				<div class="row ">
+					<div class="card mr-sm-3 ml-3 mr-3 " style="height: 465px; width: 100%">
+						<div class="card-header">
+							<div class="row align-items-center ">
+								<div class="col-6 col-md-4">
+									<h5 id="gatewayLogTitle">Gateway real-time log</h5>
+								</div>
+								<div class="col-2 col-md-4">
+									<div class="live-indicator-block">
+										<span class="live-indicator">
+											<i class="fa fa-circle blink" aria-hidden="true"></i>Live
+										</span>
+									</div>
+								</div>
+								<div class="col-4 col-md-4 text-right">
+									<span class="material-symbols-outlined">battery_4_bar</span>
+									<span class="batteryvalue" id="gatewaybatt">80%</span>
+								</div>
+							</div>
+						</div>
+						<div class="card-body overflow-auto">
+							<p class="card-text" id="realtimelog" style="line-height: 200%">
+								<!-- Your real-time log content goes here -->
+							</p>
+						</div>
+						<div class="card-footer text-right">
+							<a href="#" class="btn btn-primary" id="clearLogBtn">Clear log</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-4 mt-sm-4 mt-lg-0">
+			<div class="col-12">
+				<div class="card text-center" id="temperaturegraph">
+					<div class="card-header">
+						<h4>Temperature Graphs</h4>
+					</div>
+					<div class="card-body">
+						<canvas id="temperatureChart" width="100%" height="30"></canvas>
+					</div>
+					<div class="card-footer text-muted">
+						<div class="slidecontainer" style="text-align: center; font-size: medium; padding-top: 1%">
+							Show latest <span id="sliderValue">20</span>
+							<span style="margin-right: 1%">values</span> (
+							<span id="sliderMinValue">1</span>
+							<input type="range" min="1" max="40" value="20" class="slider" id="myRange" />
+							<span id="sliderMaxValue ">40</span>
+							)
+							<button id="toggleUrlButton">Today Data</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-4 mt-sm-4 mt-lg-4">
+			<div class="col-12">
+				<div class="card text-center" id="humiditygraph">
+					<div class="card-header">
+						<h4>Humidity Graphs</h4>
+					</div>
+					<div class="card-body">
+						<canvas id="humidityChart" width="100%" height="30"></canvas>
+					</div>
+					<div class="card-footer text-muted">
+						<div class="slidecontainer" style="text-align: center; font-size: medium; padding-top: 1%">
+							Show latest <span id="sliderValuehumi">20</span>
+							<span style="margin-right: 1%">values</span> (
+							<span id="sliderMinValuehumi">1</span>
+							<input type="range" min="1" max="40" value="20" class="slider" id="myRangehumi" />
+							<span id="sliderMaxValuehumi ">40</span>
+							)
+							<button id="toggleUrlButtonhumi">Today Data</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row mt-4 mt-sm-4 mt-lg-4 mb-5">
+			<div class="col-12">
+				<div class="card text-center" id="Locations">
+					<div class="card-header">
+						<h4>Location</h4>
+					</div>
+					<div class="card-body">
+						<div id="map"></div>
+					</div>
+					<div class="card-footer text-muted"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="script.js"></script>
+</body>
+
+
+</html>
