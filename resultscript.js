@@ -51,7 +51,10 @@ async function fetchData() {
 
   const start = urlParams.get("start");
   const end = urlParams.get("end");
-
+  
+  document.getElementById("start").value = start || "2023-12-29T00:00";
+  document.getElementById("end").value = end || "2023-12-29T15:00";
+  
   if (!start || !end) {
     console.error(
       "Invalid URL parameters. Both 'start' and 'end' are required."
