@@ -13,6 +13,7 @@ let rH = 20;
 let currentTime = new Date();
 let map;
 let filteredData = [];
+let dropdownmargin = "135px";
 
 async function submitForm() {
   var start = document.getElementById("start").value;
@@ -26,7 +27,6 @@ async function submitForm() {
 
   window.location.href = `results.html?start=${start}&end=${end}`;
 }
-
 
 $(document).ready(function () {
   var randomDelay = Math.floor(Math.random() * 1001);
@@ -45,6 +45,33 @@ $(document).ready(function () {
     $("#loadingMessage").hide();
   }, randomDelay);
 });
+
+async function fetchData() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const start = urlParams.get("start");
+  const end = urlParams.get("end");
+
+  if (!start || !end) {
+    console.error(
+      "Invalid URL parameters. Both 'start' and 'end' are required."
+    );
+    return null;
+  }
+
+  const response = await fetch("https://api.rungrueng.site/api/date", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ start: start, end: end }),
+  });
+
+  const responseData = await response.json();
+
+  console.log(responseData);
+  return responseData;
+}
 
 function mapDataValues(data, key) {
   return data.map((item) => (item[key] === 0 ? null : item[key]));
@@ -475,7 +502,7 @@ function updateCardLayout() {
   if (screenWidth <= 500) {
     var humidityChartCanvas = document.getElementById("humidityChart");
     var temperatureChartCanvas = document.getElementById("temperatureChart");
-    console.log("asddd");
+
     humidityChartCanvas.height = 120;
     temperatureChartCanvas.height = 120;
     main();
@@ -536,30 +563,21 @@ function toggleChanged(nodeName, checkboxId) {
   $(`#${checkboxId}`).bootstrapToggle("toggle");
   fetch(url + "/api/activate?nodename=" + nodeName);
 }
-// Function to fetch data from the API
-async function fetchData() {
-  let response;
-  if (today) {
-    response = await fetch(url + "/api/show/today");
-  } else {
-    response = await fetch(url + "/api/show");
-  }
-  const data = await response.json();
-  console.log(data);
-  return data;
-}
 
 function filterDataByNode(data, node) {
   return data.filter((item) => item.Nodename === node);
 }
 
 function updateAvg(data, idtemp, idhumi) {
-  const temperatures = data.map((item) => item.Temperature);
-  const humidity = data.map((item) => item.Humidity);
+  console.log(`data: ${data}`);
+  const temperatures = data.map((item) => parseFloat(item.Temperature));
+  console.log(`temperatures: ${temperatures}`);
+  const humidity = data.map((item) => parseFloat(item.Humidity));
   let sumTem = 0;
   for (let i = 0; i < temperatures.length; i++) {
     sumTem += temperatures[i];
   }
+  console.log(`sumTem: ${sumTem}`);
   const averageTemp = sumTem / temperatures.length;
   let sumHum = 0;
   for (let i = 0; i < humidity.length; i++) {
@@ -581,34 +599,24 @@ function updateAvg(data, idtemp, idhumi) {
 function updateLastUpdateTime(data) {
   const lastUpdateTimeElement = document.getElementById("lastUpdateTime");
   if (lastUpdateTimeElement) {
-    const latestDataPoint = data[data.length - 1];
-    if (latestDataPoint && latestDataPoint.Time) {
-      const lastUpdateDate = new Date(latestDataPoint.Time);
-      const options = {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-        timeZone: "UTC", // Specify the desired time zone here
-      };
-      const formattedTime = lastUpdateDate.toLocaleString("en-US", options);
-      lastUpdateTimeElement.textContent = `(Last updated at ${formattedTime})`;
-    }
-  }
-}
-async function updategatewaybat(data) {
-  const latestdata = data[data.length - 1];
-  const gatewaybatelement = document.getElementById("gatewaybatt");
-  var gatewaybat = latestdata["Gateway Battery"];
-  if (gatewaybat < 0) {
-    gatewaybatelement.innerText = "Charging";
-  } else {
-    console.log(data);
-    console.log(gatewaybatelement);
-    gatewaybatelement.innerText = gatewaybat + "%";
+    let startDataPoint = data[0];
+    let endDataPoint = data[data.length - 1];
+    let startdate = new Date(startDataPoint.Time);
+    let enddate = new Date(endDataPoint.Time);
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      timeZone: "UTC",
+    };
+    startdate = startdate.toLocaleString("en-US", options);
+    enddate = enddate.toLocaleString("en-US", options);
+
+    lastUpdateTimeElement.textContent = `(Data between ${startdate} and ${enddate}`;
   }
 }
 
@@ -638,13 +646,7 @@ function updatelog(responseData) {
   cardTextElement.innerHTML = messages.join("");
   console.log(messages.join(""));
 }
-document.getElementById("clearLogBtn").addEventListener("click", function () {
-  filteredData = [];
-  currentTime = new Date();
-  const cardTextElement = document.getElementById("realtimelog");
-  cardTextElement.innerHTML = "";
-  console.log("Log cleared!");
-});
+
 let slider = document.getElementById("myRange");
 let sliderHumi = document.getElementById("myRangehumi");
 r = slider.value;
@@ -716,8 +718,9 @@ document.getElementById("toggleUrlButton").addEventListener("click", () => {
 
 function drawmap(data) {
   if (map) map.remove();
-  var latitudes = mapDataValues(data, "Latitude").slice(-20);
-  var longitudes = mapDataValues(data, "Longitude").slice(-20);
+  var latitudes = mapDataValues(data, "Latitude").slice(-20).map(parseFloat);
+  var longitudes = mapDataValues(data, "Longitude").slice(-20).map(parseFloat);
+
   let sum = 0;
   for (let i = 0; i < latitudes.length; i++) {
     sum += latitudes[i];
@@ -815,7 +818,6 @@ async function main() {
       "humid"
     );
     updateLastUpdateTime(node1Data);
-    updategatewaybat(node1Data);
     drawmap(node1Data);
     dataLengthOld = dataLengthNew;
   } else if (dataLengthOld !== dataLengthNew) {
@@ -830,7 +832,6 @@ async function main() {
     updateAvg(node4Data, "node4avgtemp", "node4avghumi");
     createGraph(node1Data, node2Data, node3Data, node4Data);
     updatelog(data);
-    updategatewaybat(node1Data);
     updateLastUpdateTime(node1Data);
     drawmap(node1Data);
     dataLengthOld = dataLengthNew;
@@ -840,5 +841,3 @@ async function main() {
 
 main();
 fetchDataAndToggle();
-setInterval(fetchDataAndToggle, 1000);
-setInterval(main, 10000);

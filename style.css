@@ -12,7 +12,7 @@ html {
 }
 #temperatureChart,
 #humidityChart {
-  border: 2px solid #ffffff00;
+  border: 2px solid #ff030300;
 }
 
 #lastUpdateTime {
@@ -212,3 +212,23 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.navbar {
+  /* position: relative; */
+  z-index: 1000;
+  min-height: 50px;
+  border: 1px solid transparent;
+}
+
+
+
+.dropdown-menu{
+  z-index: 1000;
+  width: 285px;
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
