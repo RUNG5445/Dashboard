@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 	<title>Project</title>
@@ -28,6 +28,7 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
+
 <div class="loader" id="loadingMessage">
 	<div class=" loader-inner">
 		<div class="loader-line-wrap">
@@ -47,8 +48,6 @@
 		</div>
 	</div>
 </div>
-
-
 
 <body id="content">
 	<nav class="navbar navbar-expand-lg navbar-dark navbar-light animate__animated animate__fadeInDownBig"
@@ -92,18 +91,14 @@
 							<button type="button" onclick="submitForm()" style="margin-left:38%;">Submit</button>
 						</form>
 					</div>
-
 				</li>
-
 				</li>
-
-<!-- 				<li class="nav-item">
+				<li class="nav-item">
 					<a class="nav-link" href="http://rung.ddns.net:8080/phpmyadmin" target="_blank">Setting</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="/api/show" target="_blank">Alert</a>
-				</li> -->
-
+				</li>
 			</ul>
 		</div>
 	</nav>
@@ -111,7 +106,8 @@
 		<div class="row mt-4">
 			<div class="col-12">
 				<h1 class="p-2">
-					<span id="Dashboard">Dashboard</span>&nbsp<span id="lastUpdateTime"></span>
+					<span id="Dashboard">Dashboard</span>&nbsp<span id="lastUpdateTime"></span>&nbsp
+					<button id="toggleUrlButton" type="button" class="btn btn-danger">Only today</button>
 				</h1>
 			</div>
 		</div>
@@ -397,7 +393,6 @@
 						</div>
 						<div class="card-body overflow-auto">
 							<p class="card-text" id="realtimelog" style="line-height: 200%">
-								<!-- Your real-time log content goes here -->
 							</p>
 						</div>
 						<div class="card-footer text-right">
@@ -424,7 +419,6 @@
 							<input type="range" min="1" max="40" value="20" class="slider" id="myRange" />
 							<span id="sliderMaxValue ">40</span>
 							)
-							<button id="toggleUrlButton">Today Data</button>
 						</div>
 					</div>
 				</div>
@@ -447,13 +441,11 @@
 							<input type="range" min="1" max="40" value="20" class="slider" id="myRangehumi" />
 							<span id="sliderMaxValuehumi ">40</span>
 							)
-							<button id="toggleUrlButtonhumi">Today Data</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="row mt-4 mt-sm-4 mt-lg-4 mb-5">
 			<div class="col-12">
 				<div class="card text-center" id="Locations">
@@ -468,8 +460,9 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="script.js"></script>
-</body>
 
+	<script type="text/javascript" src="script.js"></script>
+
+</body>
 
 </html>
