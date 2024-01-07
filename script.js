@@ -541,8 +541,8 @@ function updatelog(responseData) {
     responseData.forEach((element) => {
         const elementTimestamp = new Date(element.Time).getTime();
         const currentTimestamp = currentTime.getTime() + 7 * 60 * 60 * 1000;
-        console.log(`elementTimestamp: ${elementTimestamp}`);
-        console.log(`currentTimestamp: ${currentTimestamp}`);
+        // console.log(`elementTimestamp: ${elementTimestamp}`);
+        // console.log(`currentTimestamp: ${currentTimestamp}`);
         if (elementTimestamp > currentTimestamp) {
             filteredData.push(element);
             filteredData.reverse();
@@ -555,7 +555,7 @@ function updatelog(responseData) {
     });
     const cardTextElement = document.getElementById("realtimelog");
     cardTextElement.innerHTML = messages.join("");
-    console.log(messages.join(""));
+    // console.log(messages.join(""));
 }
 
 document.getElementById("clearLogBtn").addEventListener("click", function () {
@@ -604,37 +604,66 @@ sliderHumi.onmouseup = async function () {
     createChart("humidityChart", node1Data, node2Data, node3Data, node4Data, "Humidity (Node1)", "Humidity (Node2)", "Humidity (Node3)", "Humidity (Node4)", "Humidity (%)", "humid");
 };
 
-document.getElementById("toggleUrlButton").addEventListener("click", () => {
-    let today = true;
+toggleUrlButton.addEventListener("click", () => {
+    today = !today;
+
+    let dataLengthOld = 0;
+
+    if (temperatureCharts && temperatureCharts.destroy && humidityCharts && humidityCharts.destroy) {
+        temperatureCharts.destroy();
+        humidityCharts.destroy();
+    }
+
+    if (today) {
+        toggleUrlButton.classList.add("btn-success");
+        toggleUrlButton.classList.remove("btn-danger");
+    } else {
+        toggleUrlButton.classList.add("btn-danger");
+        toggleUrlButton.classList.remove("btn-success");
+    }
+
     main();
 });
 
 function drawmap(data) {
-    if (map) map.remove();
+    if (map && map.remove) {
+        map.eachLayer(function (layer) {
+            layer.remove();
+        });
+        map.off();
+        map.remove();
+    }
 
     var latitudes = mapDataValues(data, "Latitude").slice(-20);
     var longitudes = mapDataValues(data, "Longitude").slice(-20);
-    let sum = 0;
 
-    for (let i = 0; i < latitudes.length; i++) {
-        sum += latitudes[i];
-    }
+    if (latitudes.length > 0 && longitudes.length > 0) {
+        let sum = 0;
 
-    const averagelat = (sum / latitudes.length).toFixed(6);
-    sum = 0;
-
-    for (let i = 0; i < longitudes.length; i++) {
-        sum += longitudes[i];
-    }
-    const averagelon = (sum / longitudes.length).toFixed(6);
-
-    map = L.map("map").setView([averagelat, averagelon], 20);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-    for (var i = 0; i < latitudes.length; i++) {
-        if (latitudes[i] !== null && longitudes[i] !== null) {
-            var marker = L.marker([latitudes[i], longitudes[i]]).addTo(map);
-            marker.bindPopup(`Location ${i + 1}`).openPopup();
+        for (let i = 0; i < latitudes.length; i++) {
+            sum += latitudes[i];
         }
+
+        const averagelat = (sum / latitudes.length).toFixed(6);
+        sum = 0;
+
+        for (let i = 0; i < longitudes.length; i++) {
+            sum += longitudes[i];
+        }
+
+        const averagelon = (sum / longitudes.length).toFixed(6);
+
+        map = L.map("map").setView([averagelat, averagelon], 20);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+        for (var i = 0; i < latitudes.length; i++) {
+            if (latitudes[i] !== null && longitudes[i] !== null) {
+                var marker = L.marker([latitudes[i], longitudes[i]]).addTo(map);
+                marker.bindPopup(`Location ${i + 1}`).openPopup();
+            }
+        }
+    } else {
+        console.error("No valid data for drawing the map.");
     }
 }
 
