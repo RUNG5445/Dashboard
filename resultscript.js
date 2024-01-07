@@ -5,7 +5,6 @@ var dropdownItems = document.querySelectorAll(".dropdown-item");
 let dataLengthOld = 0;
 let dataLengthNew = 0;
 let url = "https://api.rungrueng.site";
-let today = false;
 let temperatureChart;
 let humidityChart;
 let r = 20;
@@ -602,11 +601,6 @@ sliderHumi.onmouseup = async function () {
     humidityCharts.destroy();
     createChart("humidityChart", node1Data, node2Data, node3Data, node4Data, "Humidity (Node1)", "Humidity (Node2)", "Humidity (Node3)", "Humidity (Node4)", "Humidity (%)", "humid");
 };
-
-document.getElementById("toggleUrlButton").addEventListener("click", () => {
-    let today = true;
-    main();
-});
 
 function drawmap(data) {
     if (map) map.remove();
