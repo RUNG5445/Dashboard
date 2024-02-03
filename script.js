@@ -5,7 +5,7 @@ var dropdownItems = document.querySelectorAll(".dropdown-item");
 let dataLengthOld = 0;
 let dataLengthNew = 0;
 let url = "https://api.rungrueng.site";
-let today = false;
+let today = true;
 let temperatureChart;
 let humidityChart;
 let r = 20;
@@ -463,6 +463,7 @@ function toggleChanged(nodeName, checkboxId) {
 
 function filterDataByNode(data, node) {
     return data.filter((item) => item.Nodename === node);
+    // Example filterDataByNode(data,"Node1")
 }
 
 function updateAvg(data, idtemp, idhumi) {
@@ -485,12 +486,26 @@ function updateAvg(data, idtemp, idhumi) {
     console.log(`Average Humidity [${idhumi}]: ${averageHumidity.toFixed(2)} %`);
 
     const avgTempElement = document.getElementById(idtemp);
-    if (avgTempElement) {
-        avgTempElement.innerHTML = `: ${averageTemp.toFixed(2)} ํC`;
-    }
+    avgTempElement.innerHTML = `: ${averageTemp.toFixed(2)} ํC`;
+
     const avgHumiElement = document.getElementById(idhumi);
-    if (avgHumiElement) {
-        avgHumiElement.innerHTML = `: ${averageHumidity.toFixed(2)} %`;
+    avgHumiElement.innerHTML = `: ${averageHumidity.toFixed(2)} %`;
+}
+
+function updatenodebatt(data, idbatt) {
+    if (data.length > 0) {
+        const nodeData = data[data.length - 1];
+        console.log(nodeData);
+        let batteryLevels = nodeData["Node Battery"];
+        console.log(`Battery Level [${idbatt}]: ${batteryLevels} %`);
+        const avgBattElement = document.getElementById(idbatt);
+        if (batteryLevels < 0) {
+            avgBattElement.innerHTML = `: Charging`;
+        } else {
+            avgBattElement.innerHTML = `: ${batteryLevels} %`;
+        }
+    } else {
+        console.error("Data array is empty");
     }
 }
 
@@ -538,24 +553,31 @@ function updatelog(responseData) {
         second: "numeric",
         timeZone: "UTC",
     };
+
+    // Reset the filteredData array at the beginning
+    const filteredData = [];
+
     responseData.forEach((element) => {
         const elementTimestamp = new Date(element.Time).getTime();
         const currentTimestamp = currentTime.getTime() + 7 * 60 * 60 * 1000;
-        // console.log(`elementTimestamp: ${elementTimestamp}`);
-        // console.log(`currentTimestamp: ${currentTimestamp}`);
+
         if (elementTimestamp > currentTimestamp) {
             filteredData.push(element);
-            filteredData.reverse();
         }
     });
+
+    // Sort the filteredData array by timestamp
+    filteredData.sort((a, b) => new Date(a.Time).getTime() - new Date(b.Time).getTime());
+    filteredData.reverse();
     console.log(filteredData);
+
     const messages = filteredData.map((item) => {
         const formattedTime = new Date(item.Time).toLocaleString("en-US", options);
         return `[${formattedTime}] Received data from ${item.Nodename} temperature is ${item.Temperature} °C and humidity is ${item.Humidity}% <br>`;
     });
+
     const cardTextElement = document.getElementById("realtimelog");
     cardTextElement.innerHTML = messages.join("");
-    // console.log(messages.join(""));
 }
 
 document.getElementById("clearLogBtn").addEventListener("click", function () {
@@ -633,9 +655,21 @@ function drawmap(data) {
         map.off();
         map.remove();
     }
+    let number;
+    for (let i = 400; i < data.length; i++) {
+        let d = data.slice(-i);
+        console.log(d);
+        if (d[0].Nodename === "Node1") {
+            console.log(i);
+            number = i;
+            break;
+        }
+    }
 
-    var latitudes = mapDataValues(data, "Latitude").slice(-20);
-    var longitudes = mapDataValues(data, "Longitude").slice(-20);
+    var latestData = data;
+    // Consider only the latest 20 data points
+    var latitudes = mapDataValues(latestData, "Latitude");
+    var longitudes = mapDataValues(latestData, "Longitude");
 
     if (latitudes.length > 0 && longitudes.length > 0) {
         let sum = 0;
@@ -655,11 +689,48 @@ function drawmap(data) {
 
         map = L.map("map").setView([averagelat, averagelon], 20);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+        var counter = 0;
 
-        for (var i = 0; i < latitudes.length; i++) {
-            if (latitudes[i] !== null && longitudes[i] !== null) {
-                var marker = L.marker([latitudes[i], longitudes[i]]).addTo(map);
-                marker.bindPopup(`Location ${i + 1}`).openPopup();
+        for (var i = 0; i < latestData.length; i++) {
+            console.log("i = " + i);
+            if (latestData[i].Latitude !== null && latestData[i].Longitude !== null) {
+                // Calculate color intensity based on the index i
+                var colorIntensity = 255 * (i / latestData.length);
+
+                // Create a color string using RGB format
+                var markerColor = `rgb(0, 250, ${255 - colorIntensity})`;
+
+                var nodeBattery = latestData[i]["Node Battery"] < 0 ? 0 : latestData[i]["Node Battery"];
+
+                var popupContent = `Time: ${latestData[i].Time} +7<br>Nodename: ${latestData[i].Nodename}<br>Node Battery: ${nodeBattery} %<br>Temperature: ${latestData[i].Temperature} °C<br>Humidity: ${latestData[i].Humidity} %`;
+
+                for (var j = i + 1; j < latestData.length; j++) {
+                    console.log("Namein " + latestData[i].Nodename);
+                    if (
+                        latestData[i].Latitude === latestData[j].Latitude &&
+                        latestData[i].Longitude === latestData[j].Longitude &&
+                        Math.abs(new Date(latestData[i].Time) - new Date(latestData[j].Time)) <= 10000 // time difference less than 5 seconds
+                    ) {
+                        console.log("Nameinner " + latestData[i].Nodename);
+                        nodeBattery = latestData[j]["Node Battery"] < 0 ? 0 : latestData[j]["Node Battery"];
+                        popupContent += `<br><br>Time: ${latestData[j].Time} +7<br>Nodename: ${latestData[j].Nodename}<br>Node Battery: ${nodeBattery} %<br>Temperature: ${latestData[j].Temperature} °C<br>Humidity: ${latestData[j].Humidity} %`;
+                        i = j; // skip the already processed data
+                    }
+                }
+
+                // Create a marker with the specified color
+                console.log("counter : " + counter);
+                counter++;
+                var marker = L.marker([latestData[i].Latitude, latestData[i].Longitude], {
+                    icon: L.divIcon({
+                        className: "custom-marker",
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                        html: `<div style="background-color: ${markerColor}; border: 2px solid black; width: 20px; height: 20px; border-radius: 50%;">${counter}</div>`,
+                    }),
+                }).addTo(map);
+
+                marker.bindPopup(popupContent).openPopup();
             }
         }
     } else {
@@ -690,11 +761,15 @@ async function main() {
         updateAvg(node2Data, "node2avgtemp", "node2avghumi");
         updateAvg(node3Data, "node3avgtemp", "node3avghumi");
         updateAvg(node4Data, "node4avgtemp", "node4avghumi");
+        updatenodebatt(node1Data, "node1batt");
+        updatenodebatt(node2Data, "node2batt");
+        updatenodebatt(node3Data, "node3batt");
+        updatenodebatt(node4Data, "node4batt");
         createChart("temperatureChart", node1Data, node2Data, node3Data, node4Data, "Temperature (Node1)", "Temperature (Node2)", "Temperature (Node3)", "Temperature (Node4)", "Temperature (°C)", "temp");
         createChart("humidityChart", node1Data, node2Data, node3Data, node4Data, "Humidity (Node1)", "Humidity (Node2)", "Humidity (Node3)", "Humidity (Node4)", "Humidity (%)", "humid");
         updateLastUpdateTime(node1Data);
         updategatewaybat(node1Data);
-        drawmap(node1Data);
+        drawmap(data);
         dataLengthOld = dataLengthNew;
     } else if (dataLengthOld !== dataLengthNew) {
         console.log(`\n\n`);
@@ -708,11 +783,15 @@ async function main() {
         updateAvg(node2Data, "node2avgtemp", "node2avghumi");
         updateAvg(node3Data, "node3avgtemp", "node3avghumi");
         updateAvg(node4Data, "node4avgtemp", "node4avghumi");
+        updatenodebatt(node1Data, "node1batt");
+        updatenodebatt(node2Data, "node2batt");
+        updatenodebatt(node3Data, "node3batt");
+        updatenodebatt(node4Data, "node4batt");
         createGraph(node1Data, node2Data, node3Data, node4Data);
         updatelog(data);
         updategatewaybat(node1Data);
         updateLastUpdateTime(node1Data);
-        drawmap(node1Data);
+        drawmap(data);
         dataLengthOld = dataLengthNew;
     }
     console.log(`Nothing new`);
