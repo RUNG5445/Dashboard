@@ -603,28 +603,93 @@ sliderHumi.onmouseup = async function () {
 };
 
 function drawmap(data) {
-    if (map) map.remove();
-    var latitudes = mapDataValues(data, "Latitude").slice(-20).map(parseFloat);
-    var longitudes = mapDataValues(data, "Longitude").slice(-20).map(parseFloat);
-
-    let sum = 0;
-    for (let i = 0; i < latitudes.length; i++) {
-        sum += latitudes[i];
+    if (map && map.remove) {
+        map.eachLayer(function (layer) {
+            layer.remove();
+        });
+        map.off();
+        map.remove();
     }
-    const averagelat = (sum / latitudes.length).toFixed(6);
-    sum = 0;
-    for (let i = 0; i < longitudes.length; i++) {
-        sum += longitudes[i];
-    }
-    const averagelon = (sum / longitudes.length).toFixed(6);
-
-    map = L.map("map").setView([averagelat, averagelon], 20);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-    for (var i = 0; i < latitudes.length; i++) {
-        if (latitudes[i] !== null && longitudes[i] !== null) {
-            var marker = L.marker([latitudes[i], longitudes[i]]).addTo(map);
-            marker.bindPopup(`Location ${i + 1}`).openPopup();
+    let number;
+    for (let i = 400; i < data.length; i++) {
+        let d = data.slice(-i);
+        console.log(d);
+        if (d[0].Nodename === "Node1") {
+            console.log(i);
+            number = i;
+            break;
         }
+    }
+
+    var latestData = data;
+    // Consider only the latest 20 data points
+    var latitudes = mapDataValues(latestData, "Latitude");
+    var longitudes = mapDataValues(latestData, "Longitude");
+
+    if (latitudes.length > 0 && longitudes.length > 0) {
+        let sum = 0;
+
+        for (let i = 0; i < latitudes.length; i++) {
+            sum += latitudes[i];
+        }
+
+        const averagelat = (sum / latitudes.length).toFixed(6);
+        sum = 0;
+
+        for (let i = 0; i < longitudes.length; i++) {
+            sum += longitudes[i];
+        }
+
+        const averagelon = (sum / longitudes.length).toFixed(6);
+
+        map = L.map("map").setView([averagelat, averagelon], 20);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+        var counter = 0;
+
+        for (var i = 0; i < latestData.length; i++) {
+            console.log("i = " + i);
+            if (latestData[i].Latitude !== null && latestData[i].Longitude !== null) {
+                // Calculate color intensity based on the index i
+                var colorIntensity = 255 * (i / latestData.length);
+
+                // Create a color string using RGB format
+                var markerColor = `rgb(0, 250, ${255 - colorIntensity})`;
+
+                var nodeBattery = latestData[i]["Node Battery"] < 0 ? 0 : latestData[i]["Node Battery"];
+
+                var popupContent = `Time: ${latestData[i].Time} +7<br>Nodename: ${latestData[i].Nodename}<br>Node Battery: ${nodeBattery} %<br>Temperature: ${latestData[i].Temperature} °C<br>Humidity: ${latestData[i].Humidity} %`;
+
+                for (var j = i + 1; j < latestData.length; j++) {
+                    console.log("Namein " + latestData[i].Nodename);
+                    if (
+                        latestData[i].Latitude === latestData[j].Latitude &&
+                        latestData[i].Longitude === latestData[j].Longitude &&
+                        Math.abs(new Date(latestData[i].Time) - new Date(latestData[j].Time)) <= 10000 // time difference less than 5 seconds
+                    ) {
+                        console.log("Nameinner " + latestData[i].Nodename);
+                        nodeBattery = latestData[j]["Node Battery"] < 0 ? 0 : latestData[j]["Node Battery"];
+                        popupContent += `<br><br>Time: ${latestData[j].Time} +7<br>Nodename: ${latestData[j].Nodename}<br>Node Battery: ${nodeBattery} %<br>Temperature: ${latestData[j].Temperature} °C<br>Humidity: ${latestData[j].Humidity} %`;
+                        i = j; // skip the already processed data
+                    }
+                }
+
+                // Create a marker with the specified color
+                console.log("counter : " + counter);
+                counter++;
+                var marker = L.marker([latestData[i].Latitude, latestData[i].Longitude], {
+                    icon: L.divIcon({
+                        className: "custom-marker",
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                        html: `<div style="background-color: ${markerColor}; border: 2px solid black; width: 20px; height: 20px; border-radius: 50%;">${counter}</div>`,
+                    }),
+                }).addTo(map);
+
+                marker.bindPopup(popupContent).openPopup();
+            }
+        }
+    } else {
+        console.error("No valid data for drawing the map.");
     }
 }
 
@@ -633,6 +698,21 @@ function createGraph(node1Data, node2Data, node3Data, node4Data) {
     createChart("temperatureChart", node1Data, node2Data, node3Data, node4Data, "Temperature (Node1)", "Temperature (Node2)", "Temperature (Node3)", "Temperature (Node4)", "Temperature (°C)", "temp");
     humidityCharts.destroy();
     createChart("humidityChart", node1Data, node2Data, node3Data, node4Data, "Humidity (Node1)", "Humidity (Node2)", "Humidity (Node3)", "Humidity (Node4)", "Humidity (%)", "humid");
+}
+
+function updatenodebatt(data, idbatt) {
+    if (data.length > 0) {
+        const nodeData = data[data.length - 1];
+        console.log(nodeData);
+        const batteryLevels = nodeData["Node Battery"];
+
+        console.log(`Battery Level [${idbatt}]: ${batteryLevels} %`);
+
+        const avgBattElement = document.getElementById(idbatt);
+        avgBattElement.innerHTML = `: ${batteryLevels} %`;
+    } else {
+        console.error("Data array is empty");
+    }
 }
 
 async function main() {
@@ -653,10 +733,14 @@ async function main() {
         updateAvg(node2Data, "node2avgtemp", "node2avghumi");
         updateAvg(node3Data, "node3avgtemp", "node3avghumi");
         updateAvg(node4Data, "node4avgtemp", "node4avghumi");
+        updatenodebatt(node1Data, "node1batt");
+        updatenodebatt(node1Data, "node2batt");
+        updatenodebatt(node1Data, "node3batt");
+        updatenodebatt(node1Data, "node4batt");
         createChart("temperatureChart", node1Data, node2Data, node3Data, node4Data, "Temperature (Node1)", "Temperature (Node2)", "Temperature (Node3)", "Temperature (Node4)", "Temperature (°C)", "temp");
         createChart("humidityChart", node1Data, node2Data, node3Data, node4Data, "Humidity (Node1)", "Humidity (Node2)", "Humidity (Node3)", "Humidity (Node4)", "Humidity (%)", "humid");
 
-        drawmap(node1Data);
+        drawmap(data);
         dataLengthOld = dataLengthNew;
     }
 }
