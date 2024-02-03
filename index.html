@@ -52,7 +52,7 @@
 <body id="content">
 	<nav class="navbar navbar-expand-lg navbar-dark navbar-light animate__animated animate__fadeInDownBig"
 		style="background-color: #484748d7">
-		<a class="navbar-brand" href="/">Project</a>
+		<a class="navbar-brand" href="/">Admin</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
 			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -93,12 +93,12 @@
 					</div>
 				</li>
 				</li>
-<!-- 				<li class="nav-item">
+				<li class="nav-item">
 					<a class="nav-link" href="http://rung.ddns.net:8080/phpmyadmin" target="_blank">Setting</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="/api/show" target="_blank">Alert</a>
-				</li> -->
+				</li>
 			</ul>
 		</div>
 	</nav>
@@ -107,7 +107,7 @@
 			<div class="col-12">
 				<h1 class="p-2">
 					<span id="Dashboard">Dashboard</span>&nbsp<span id="lastUpdateTime"></span>&nbsp
-					<button id="toggleUrlButton" type="button" class="btn btn-danger">Only today</button>
+					<button id="toggleUrlButton" type="button" class="btn btn-success">Only today</button>
 				</h1>
 			</div>
 		</div>
@@ -123,7 +123,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue">80%</span>
+										<span class="batteryvalue" id="node1batt">80%</span>
 									</div>
 								</div>
 							</div>
@@ -186,7 +186,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue">80%</span>
+										<span class="batteryvalue" id="node2batt">80%</span>
 									</div>
 								</div>
 							</div>
@@ -251,7 +251,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue">80%</span>
+										<span class="batteryvalue" id="node3batt">80%</span>
 									</div>
 								</div>
 							</div>
@@ -314,7 +314,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue">80%</span>
+										<span class="batteryvalue" id="node4batt">80%</span>
 									</div>
 								</div>
 							</div>
