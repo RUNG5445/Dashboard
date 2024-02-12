@@ -17,6 +17,24 @@ async function submitForms() {
     window.location.href = `results.html?start=${start}&end=${end}`;
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    var randomDelay = Math.floor(Math.random() * 1001);
+
+    var styleElement = document.createElement("style");
+    styleElement.textContent = `
+  :root {
+    --animate-duration: ${randomDelay + 500}ms !important;
+    --animate-delay: 1s !important;
+  }
+`;
+
+    document.head.appendChild(styleElement);
+
+    setTimeout(function () {
+        $("#loadingMessage").hide();
+    }, randomDelay);
+});
+
 async function fetchDataAndUpdateForm() {
     try {
         const response = await fetch(url + "/api/alert/con");
