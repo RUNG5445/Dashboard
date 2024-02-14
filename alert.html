@@ -6,29 +6,15 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.0.4/css/bootstrap5-toggle.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.0.4/js/bootstrap5-toggle.jquery.min.js"></script>
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
-
 <div class="loader" id="loadingMessage">
     <div class=" loader-inner">
         <div class="loader-line-wrap">
@@ -48,7 +34,6 @@
         </div>
     </div>
 </div>
-
 <nav class="navbar navbar-expand-lg navbar-dark navbar-light animate__animated animate__fadeInDownBig"
     style="background-color: #484748d7">
     <a class="navbar-brand" href="/">Admin</a>
@@ -93,10 +78,10 @@
             </li>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="http://rung.ddns.net:8080/phpmyadmin" target="_blank">Setting</a>
+                <a class="nav-link" href="setting.html" target="_blank">Setting</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="alert.html" target="_blank">Alert</a>
+                <a class="nav-link" href="alert.html">Alert</a>
             </li>
         </ul>
     </div>
@@ -118,7 +103,6 @@
 </style>
 
 <body>
-
     <div class="container">
         <div class="row justify-content-center mt-4">
         </div>
@@ -144,7 +128,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <label for="humidity">Humidity (Maximum humidity to trigger alert):</label>
                                 <div class="input-group">
@@ -154,7 +137,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <label for="speed">Speed (Maximum Speed to trigger alert):</label>
                                 <div class="input-group">
@@ -164,17 +146,14 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <label for="latitude">Latitude (Latitude of the destination):</label>
                                 <input type="text" class="form-control" id="latitude" value="" name="Latitude">
                             </div>
-
                             <div class="form-group">
                                 <label for="longitude">Longitude (Longitude of the destination):</label>
                                 <input type="text" class="form-control" id="longitude" value="" name="Longitude">
                             </div>
-
                             <div class="form-group">
                                 <label for="distance">Distance (Distance from destination to trigger alert):</label>
                                 <div class="input-group">
@@ -184,7 +163,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <label for="nodeBattery">Node Battery (Minimum node battery level to trigger
                                     alert):</label>
@@ -195,7 +173,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <label for="gatewayBattery">Gateway Battery (Minimum gateway battery level to
                                     trigger
@@ -208,15 +185,15 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row justify-content-center">
                                 <button type="submit" class="btn btn-primary" onclick="submitForm()">Submit</button>
+                                <button type="button" class="btn btn-secondary ml-2"
+                                    onclick="resetForm()">Reset</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-header">
@@ -228,7 +205,6 @@
                     </div>
                     <div class="card-body">
                         <form id="email">
-
                             <div class="form-group">
                                 <label for="temperature">Recipient Email:</label>
                                 <input type="email" class="form-control" id="Email" name="emails" value="">
@@ -242,12 +218,10 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row justify-content-center">
                                 <button type="submit" class="btn btn-primary"
                                     onclick="submitFormEmail()">Submit</button>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -260,7 +234,6 @@
                         </div>
                     </div>
                     <div class="card-body" id="allemail">
-
                     </div>
                 </div>
             </div>
@@ -269,7 +242,7 @@
             <div class="col-12">
                 <div class="card text-center" id="Locations">
                     <div class="card-header">
-                        <h4>Location</h4>
+                        <h4>Click on the map to mark the destination</h4>
                     </div>
                     <div class="card-body">
                         <div id="map"></div>
@@ -279,11 +252,7 @@
             </div>
         </div>
     </div>
-
-
-
     <script type="text/javascript" src="alertjs.js"></script>
 </body>
-
 
 </html>
