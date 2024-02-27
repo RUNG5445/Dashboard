@@ -1,5 +1,19 @@
 let url = "https://api.rungrueng.site";
 
+function getCookie(name) {
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.split("=");
+        if (cookieName.trim() === name) {
+            return cookieValue;
+        }
+    }
+
+    return null;
+}
+
+let username = getCookie("username");
+
 async function submitFormss() {
     var start = document.getElementById("start").value;
     var end = document.getElementById("end").value;
@@ -11,6 +25,28 @@ async function submitFormss() {
 
     window.location.href = `results.html?start=${start}&end=${end}`;
 }
+
+function logout() {
+    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "table=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.replace("login.html");
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    const navbarBrand = document.getElementById("name");
+    if (username) {
+        console.log(username);
+        navbarBrand.textContent = capitalizeFirstLetter(username);
+    }
+    if (!username) {
+        window.location.replace("login.html");
+        return;
+    }
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     var randomDelay = Math.floor(Math.random() * 1001);
@@ -31,6 +67,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function submitForm() {
+    const url = "https://api.rungrueng.site"; // Update with your API URL
+
     const syncword = document.getElementById("syncword").value;
     const txPower = document.getElementById("txPower").value;
     const frequency = document.getElementById("frequency").value;
@@ -41,6 +79,7 @@ async function submitForm() {
         txPower: txPower,
         freq: frequency,
         interval: transmissionInterval,
+        user: username,
     };
 
     const syncwordHex = parseInt(syncword).toString(16).toUpperCase();
@@ -50,9 +89,7 @@ async function submitForm() {
     Frequency: ${frequency} MHz
     Transmission Interval: ${transmissionInterval} minutes`;
 
-    if (confirm(message)) {
-        alert("Form submitted! LoRa Settings have been changed.");
-    } else {
+    if (!confirm(message)) {
         return;
     }
 
@@ -68,19 +105,23 @@ async function submitForm() {
         const response = await fetch(url + "/api/sendconfig", options);
 
         if (response.ok) {
+            alert("Form submitted! LoRa Settings have been changed.");
             console.log("Form submitted successfully!");
         } else {
+            alert("Error submitting form. Please try again later.");
             console.log("Error submitting form.");
         }
     } catch (error) {
+        alert("Error submitting form. Please try again later.");
         console.error("Error submitting form:", error);
     }
+
     location.reload();
 }
 
 async function fetchDataAndUpdateForm() {
     try {
-        const response = await fetch(url + "/api/showconfig");
+        const response = await fetch(url + "/api/showconfig?user=" + username);
         const data = await response.json();
 
         document.getElementById("syncword").value = data.Syncword;
