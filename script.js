@@ -461,7 +461,7 @@ window.addEventListener("resize", function () {
 
 async function fetchDataAndToggle() {
     try {
-        const response = await fetch(url + "/api/node?user=" + username);
+        const response = await fetch("https://api.rungrueng.site" + "/api/node?user=" + username);
         const data = await response.json();
         console.log("fetchDataAndToggle - Data received: " + data.nodenames);
         updateCheckbox(data, "Node1", "node1toggle");
