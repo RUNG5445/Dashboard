@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById("password").value;
 
         try {
-            const response = await fetch("http://rung.ddns.net:8050/login", {
+            const response = await fetch("https://api.rungrueng.site/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await response.json();
             if (response.ok) {
                 const expirationDate = new Date(Date.now() + 10 * 60 * 1000);
-                
+
                 document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 document.cookie = "table=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 document.cookie = "id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
