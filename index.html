@@ -52,7 +52,7 @@
 <body id="content">
 	<nav class="navbar navbar-expand-lg navbar-dark navbar-light animate__animated animate__fadeInDownBig"
 		style="background-color: #484748d7">
-		<a class="navbar-brand" href="/">Admin</a>
+		<a id="name" class="navbar-brand" href="/">Admin</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
 			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -65,10 +65,10 @@
 						Home
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-						<a class="dropdown-item" href="index.html#Dashboard">Dashboard</a>
-						<a class="dropdown-item" href="index.html#temperaturegraph">Temperature Graphs</a>
-						<a class="dropdown-item" href="index.html#humiditygraph">Humidity Graphs</a>
-						<a class="dropdown-item" href="index.html#Locations">Locations</a>
+						<a class="dropdown-item" href="#Dashboard">Dashboard</a>
+						<a class="dropdown-item" href="#temperaturegraph">Temperature Graphs</a>
+						<a class="dropdown-item" href="#humiditygraph">Humidity Graphs</a>
+						<a class="dropdown-item" href="#Locations">Locations</a>
 					</div>
 				</li>
 				<li class="nav-item">
@@ -100,6 +100,12 @@
 					<a class="nav-link" href="alert.html" target="_blank">Alert</a>
 				</li>
 			</ul>
+			<ul class="navbar-nav ml-auto">
+				<!-- Log out button -->
+				<li class="nav-item">
+					<button class="btn btn-outline-light" onclick="logout()">Log out</button>
+				</li>
+			</ul>
 		</div>
 	</nav>
 	<div class="container-fluid" style="margin-top: 0%;">
@@ -123,7 +129,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue" id="node1batt">NaN %</span>
+										<span class="batteryvalue" id="node1batt">80%</span>
 									</div>
 								</div>
 							</div>
@@ -186,7 +192,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue" id="node2batt">NaN %</span>
+										<span class="batteryvalue" id="node2batt">80%</span>
 									</div>
 								</div>
 							</div>
@@ -251,7 +257,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue" id="node3batt">NaN %</span>
+										<span class="batteryvalue" id="node3batt">80%</span>
 									</div>
 								</div>
 							</div>
@@ -314,7 +320,7 @@
 									</div>
 									<div class="col-auto">
 										<span class="material-symbols-outlined">battery_4_bar</span>
-										<span class="batteryvalue" id="node4batt">NaN %</span>
+										<span class="batteryvalue" id="node4batt">80%</span>
 									</div>
 								</div>
 							</div>
@@ -387,7 +393,7 @@
 								</div>
 								<div class="col-4 col-md-4 text-right">
 									<span class="material-symbols-outlined">battery_4_bar</span>
-									<span class="batteryvalue" id="gatewaybatt">NaN %</span>
+									<span class="batteryvalue" id="gatewaybatt">80%</span>
 								</div>
 							</div>
 						</div>
