@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .center-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        body {
+            background: radial-gradient(#343333, #101010) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 center-content">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="card-title text-center">Welcome to the Admin Page</h1>
+                        <div id="userList" class="mt-4 text-center"></div>
+                        <form id="addUserForm" class="mt-4">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="table">Table Name</label>
+                                <input type="text" class="form-control" id="table" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Add User</button>
+                            <button class="btn btn-danger btn-block mt-4" onclick="logout()">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function loginAsUser(username) {
+            const expirationDate = new Date(Date.now() + 10 * 60 * 1000);
+            document.cookie = `username=${username}; expires=${expirationDate.toUTCString()}; path=/;`;
+            window.open("index.html", "_blank");
+        }
+
+        async function fetchUserData() {
+            try {
+                const response = await fetch("http://rung.ddns.net:8050/api/user");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch user data.");
+                }
+                const userList = await response.json();
+                const userListDiv = document.getElementById("userList");
+
+                userListDiv.innerHTML = "";
+
+                userList.forEach(user => {
+                    if (user !== "admin") {
+                        const button = document.createElement("button");
+                        button.textContent = `Login as ${user}`;
+                        button.className = "btn btn-primary mr-2 mt-2";
+                        button.onclick = () => loginAsUser(user);
+                        userListDiv.appendChild(button);
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function addUser(username, password, table) {
+            try {
+                const response = await fetch(`http://rung.ddns.net:8050/add_user?username=${username}&password=${password}&table=${table}`, {
+                    method: "GET"
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to add user.");
+                }
+                alert("User added successfully.");
+                fetchUserData();
+            } catch (error) {
+                console.error(error);
+                alert("Failed to add user.");
+            }
+        }
+
+        document.getElementById("addUserForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const table = document.getElementById("table").value;
+            addUser(username, password, table);
+        });
+
+        window.onload = function () {
+            const cookies = document.cookie.split(";").map(cookie => cookie.trim().split("="));
+            const idCookie = cookies.find(cookie => cookie[0] === "id");
+            const tableCookie = cookies.find(cookie => cookie[0] === "table");
+            const usernameCookie = cookies.find(cookie => cookie[0] === "username");
+
+            if (idCookie && idCookie[1] === "1" && tableCookie && tableCookie[1] === "admin" && usernameCookie && usernameCookie[1] === "admin") {
+                fetchUserData();
+            } else {
+                alert("Unauthorized access. Redirecting to index page.");
+                window.location.href = "login.html";
+            }
+        }
+        function logout() {
+            document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "table=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.replace("login.html");
+        }
+    </script>
+</body>
+
+</html>
