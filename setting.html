@@ -33,7 +33,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-light animate__animated animate__fadeInDownBig"
     style="background-color: #484748d7">
-    <a class="navbar-brand" href="/">Admin</a>
+    <a id="name" class="navbar-brand" href="/">Admin</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -79,6 +79,12 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="alert.html" target="_blank">Alert</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <!-- Log out button -->
+            <li class="nav-item">
+                <button class="btn btn-outline-light" onclick="logout()">Log out</button>
             </li>
         </ul>
     </div>
