@@ -540,7 +540,8 @@ function updatenodebatt(data, idbatt) {
 }
 
 function updateLastUpdateTime(data) {
-    let updateLastUpdateTime = data.reverse();
+    let updateLastUpdateTime = data;
+    console.log("aaaa" + updateLastUpdateTime);
     const lastUpdateTimeElement = document.getElementById("lastUpdateTime");
     if (lastUpdateTimeElement) {
         const latestDataPoint = updateLastUpdateTime[updateLastUpdateTime.length - 1];
@@ -556,8 +557,10 @@ function updateLastUpdateTime(data) {
                 second: "numeric",
                 timeZone: "UTC",
             };
+           
 
             const formattedTime = lastUpdateDate.toLocaleString("en-US", options);
+            console.log("aaaa"+formattedTime);
             lastUpdateTimeElement.textContent = `(Last updated at ${formattedTime})`;
         }
     }
