@@ -185,8 +185,8 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(255, 26, 104, 0.8)",
-                    borderColor: "rgba(255, 26, 104, 1)",
+                    backgroundColor: "rgba(0, 255, 0, 0.8)",
+                    borderColor: "rgba(0, 255, 0, 1)",
                     borderWidth: 2,
                 },
                 {
@@ -196,8 +196,8 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(54, 162, 235, 0.8)",
-                    borderColor: "rgba(54, 162, 235, 1)",
+                    backgroundColor: "rgba(255, 255, 0, 0.8)",
+                    borderColor: "rgba(255, 255, 0, 1)",
                     borderWidth: 2,
                 },
                 {
@@ -207,8 +207,9 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(255, 255, 0, 0.8)",
-                    borderColor: "rgba(255, 255, 0, 1)",
+
+                    backgroundColor: "rgba(54, 162, 235, 0.8)",
+                    borderColor: "rgba(54, 162, 235, 1)",
                     borderWidth: 2,
                 },
                 {
@@ -218,8 +219,9 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(0, 255, 0, 0.8)",
-                    borderColor: "rgba(0, 255, 0, 1)",
+                    backgroundColor: "rgba(255, 26, 104, 0.8)",
+                    borderColor: "rgba(255, 26, 104, 1)",
+
                     borderWidth: 2,
                 },
             ],
