@@ -174,8 +174,8 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(255, 26, 104, 0.8)",
-                    borderColor: "rgba(255, 26, 104, 1)",
+                    backgroundColor: "rgba(0, 255, 0, 0.8)",
+                    borderColor: "rgba(0, 255, 0, 1)",
                     borderWidth: 2,
                 },
                 {
@@ -185,8 +185,8 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(54, 162, 235, 0.8)",
-                    borderColor: "rgba(54, 162, 235, 1)",
+                    backgroundColor: "rgba(255, 255, 0, 0.8)",
+                    borderColor: "rgba(255, 255, 0, 1)",
                     borderWidth: 2,
                 },
                 {
@@ -196,8 +196,9 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(255, 255, 0, 0.8)",
-                    borderColor: "rgba(255, 255, 0, 1)",
+
+                    backgroundColor: "rgba(54, 162, 235, 0.8)",
+                    borderColor: "rgba(54, 162, 235, 1)",
                     borderWidth: 2,
                 },
                 {
@@ -207,8 +208,9 @@ function createChart(canvasId, data1, data2, data3, data4, label1, label2, label
                         y: item.y,
                     })),
                     yAxisID: "y1",
-                    backgroundColor: "rgba(0, 255, 0, 0.8)",
-                    borderColor: "rgba(0, 255, 0, 1)",
+                    backgroundColor: "rgba(255, 26, 104, 0.8)",
+                    borderColor: "rgba(255, 26, 104, 1)",
+
                     borderWidth: 2,
                 },
             ],
@@ -461,7 +463,7 @@ window.addEventListener("resize", function () {
 
 async function fetchDataAndToggle() {
     try {
-        const response = await fetch("https://api.rungrueng.site" + "/api/node?user=" + username);
+        const response = await fetch(url + "/api/node?user=" + username);
         const data = await response.json();
         console.log("fetchDataAndToggle - Data received: " + data.nodenames);
         updateCheckbox(data, "Node1", "node1toggle");
@@ -723,13 +725,9 @@ function drawmap(data) {
             console.log("i = " + i);
             if (latestData[i].Latitude !== null && latestData[i].Longitude !== null) {
                 var colorIntensity = 255 * (i / latestData.length);
-
                 var markerColor = `rgb(0, 250, ${255 - colorIntensity})`;
-
                 var nodeBattery = latestData[i]["Node Battery"] < 0 ? 0 : latestData[i]["Node Battery"];
-
                 var popupContent = `Time: ${latestData[i].Time} +7<br>Nodename: ${latestData[i].Nodename}<br>Node Battery: ${nodeBattery} %<br>Temperature: ${latestData[i].Temperature} °C<br>Humidity: ${latestData[i].Humidity} %`;
-
                 for (var j = i + 1; j < latestData.length; j++) {
                     console.log("Namein " + latestData[i].Nodename);
                     if (latestData[i].Latitude === latestData[j].Latitude && latestData[i].Longitude === latestData[j].Longitude && Math.abs(new Date(latestData[i].Time) - new Date(latestData[j].Time)) <= 10000) {
