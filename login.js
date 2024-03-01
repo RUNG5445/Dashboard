@@ -13,12 +13,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({
+                    username,
+                    password,
+                }),
             });
 
             const data = await response.json();
             if (response.ok) {
-                const expirationDate = new Date(Date.now() + 10 * 60 * 1000);
+                const expirationDate = new Date(Date.now() + 1000 * 60 * 1000);
 
                 document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 document.cookie = "table=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
