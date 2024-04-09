@@ -23,9 +23,9 @@ To deploy the dashboard application locally, follow these steps:
 
 Once the application is running, you can access the dashboard interface through your web browser. Use the provided features to visualize and manage your data effectively.
 
-## Contributing
+## Authors
 
-Contributions to the dashboard application are welcome! Please follow the guidelines outlined in the CONTRIBUTING.md file.
+- [Rungrueng Janrueng](https://github.com/RUNG5445)
 
 ## License
 
